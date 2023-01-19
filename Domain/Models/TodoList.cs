@@ -1,9 +1,10 @@
+using Domain.Configurations;
 using Microsoft.EntityFrameworkCore;
 using DbContext = SoftDeletes.Core.DbContext;
 
 namespace Domain.Models;
 
-[EntityTypeConfiguration(typeof(TodoList))]
+[EntityTypeConfiguration(typeof(TodoListConfiguration))]
 public class TodoList : SoftDeletes.ModelTools.ModelExtension
 {
     public long Id { get; set; }
