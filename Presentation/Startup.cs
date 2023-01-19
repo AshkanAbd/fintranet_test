@@ -1,7 +1,10 @@
+using Infrastructure;
 using Microsoft.AspNetCore.Cors.Infrastructure;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.Net.Http.Headers;
 using Swashbuckle.AspNetCore.SwaggerUI;
+
+namespace Presentation;
 
 public class Startup
 {
@@ -15,6 +18,8 @@ public class Startup
     // This method gets called by the runtime. Use this method to add services to the container.
     public void ConfigureServices(IServiceCollection services)
     {
+        services.AddInfrastructure(Configuration);
+
         services.AddCors(options => {
             options.AddPolicy(CorsConstants.AccessControlAllowOrigin, builder =>
                 builder.WithOrigins("*")

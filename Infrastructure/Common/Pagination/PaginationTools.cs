@@ -1,8 +1,7 @@
-using Microsoft.AspNetCore.Http;
+using Application.Common.Pagination;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Primitives;
 
-namespace Application.Common.Pagination;
+namespace Infrastructure.Common.Pagination;
 
 public static class PaginationTools
 {
@@ -16,31 +15,7 @@ public static class PaginationTools
             pageSize = 10;
         }
     }
-
-    private static void LoadPaginationFromRequest(ref int? page, ref int? pageSize, HttpRequest request)
-    {
-        var pageQueryParam = request.Query
-            .Where(x => x.Key == "page")
-            .Select(x => x.Value)
-            .FirstOrDefault();
-        if (!StringValues.IsNullOrEmpty(pageQueryParam)) {
-            if (int.TryParse(pageQueryParam, out var iPage)) {
-                page = iPage;
-            }
-        }
-
-        var pageSizeQueryParam = request.Query
-            .Where(x => x.Key == "pageSize")
-            .Select(x => x.Value)
-            .FirstOrDefault();
-
-        if (StringValues.IsNullOrEmpty(pageSizeQueryParam)) return;
-
-        if (int.TryParse(pageSizeQueryParam, out var iPageSize)) {
-            pageSize = iPageSize;
-        }
-    }
-
+    
     public static async Task<PaginationModel<T>> UsePaginationAsync<T>(this IQueryable<T> query, int? page = null,
         int? pageSize = null, CancellationToken cancellationToken = default)
     {
@@ -65,18 +40,6 @@ public static class PaginationTools
         };
     }
 
-    public static async Task<PaginationModel<T>> UsePaginationAsync<T>(this IQueryable<T> query,
-        HttpRequest? request, CancellationToken cancellationToken = default)
-    {
-        int? page = 1;
-        int? pageSize = 10;
-        if (request != null) {
-            LoadPaginationFromRequest(ref page, ref pageSize, request);
-        }
-
-        return await UsePaginationAsync(query, page, pageSize, cancellationToken);
-    }
-
     public static PaginationModel<T> UsePagination<T>(this IQueryable<T> query, int? page = null,
         int? pageSize = null)
     {
@@ -99,17 +62,5 @@ public static class PaginationTools
             CurrentPageSize = iPageSize,
             Total = count
         };
-    }
-
-    public static PaginationModel<T> UsePagination<T>(this IQueryable<T> query, HttpRequest? request)
-    {
-        int? page = 1;
-        int? pageSize = 10;
-
-        if (request != null) {
-            LoadPaginationFromRequest(ref page, ref pageSize, request);
-        }
-
-        return UsePagination(query, page, pageSize);
     }
 }
