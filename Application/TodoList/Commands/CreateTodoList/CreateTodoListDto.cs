@@ -1,4 +1,4 @@
-namespace Application.TodoList.Commands;
+namespace Application.TodoList.Commands.CreateTodoList;
 
 public class CreateTodoListDto
 {
@@ -6,4 +6,5 @@ public class CreateTodoListDto
     public string Title { get; set; } = "";
     public string Color { get; set; } = "";
     public DateTime CreatedAt { get; set; }
+    public DateTime UpdatedAt { get; set; }
 }

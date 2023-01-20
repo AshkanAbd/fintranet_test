@@ -1,7 +1,7 @@
 using Application.Common.Validation;
 using FluentValidation;
 
-namespace Application.TodoList.Commands;
+namespace Application.TodoList.Commands.CreateTodoList;
 
 public class CreateTodoListValidator : Validator<CreateTodoListCommand>
 {

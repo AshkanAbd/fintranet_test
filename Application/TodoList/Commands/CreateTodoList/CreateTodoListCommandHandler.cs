@@ -4,7 +4,7 @@ using Application.Common.Validation;
 using Infrastructure.Repositories.TodoList;
 using Microsoft.AspNetCore.Http;
 
-namespace Application.TodoList.Commands;
+namespace Application.TodoList.Commands.CreateTodoList;
 
 public class CreateTodoListCommandHandler :
     AbstractRequestHandler<CreateTodoListCommand, StdResponse<CreateTodoListDto>>
@@ -35,6 +35,7 @@ public class CreateTodoListCommandHandler :
             Title = todoList.Title,
             Color = todoList.Color,
             CreatedAt = todoList.CreatedAt,
+            UpdatedAt = todoList.UpdatedAt,
         });
     }
 }
