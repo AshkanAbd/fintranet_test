@@ -6,7 +6,7 @@ namespace Infrastructure.Repositories.TodoList;
 
 public class TodoListRepository : ITodoListRepository
 {
-    public AppDbContext DbContext { get; set; }
+    private AppDbContext DbContext { get; set; }
 
     public TodoListRepository(AppDbContext dbContext)
     {
@@ -22,6 +22,11 @@ public class TodoListRepository : ITodoListRepository
         return todoList;
     }
 
+    public async Task<bool> Exists(long id, CancellationToken cancellationToken = default)
+    {
+        return await DbContext.TodoLists.AnyAsync(x => x.Id == id, cancellationToken);
+    }
+
     public async Task<Domain.Models.TodoList?> Get(long id, CancellationToken cancellationToken = default)
     {
         return await DbContext.TodoLists.FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
@@ -31,7 +36,7 @@ public class TodoListRepository : ITodoListRepository
         CancellationToken cancellationToken = default)
     {
         return await DbContext.TodoLists
-            .OrderByDescending(x=>x.CreatedAt)
+            .OrderByDescending(x => x.CreatedAt)
             .UsePaginationAsync(page, pageSize, cancellationToken);
     }
 

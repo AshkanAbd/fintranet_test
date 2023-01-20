@@ -144,4 +144,28 @@ public class TodoListRepositoryUnitTest : AbstractDatabaseTest
 
         Assert.Null(res);
     }
+
+    [Fact]
+    public async Task Exists_ShouldReturnTrueWhenExists()
+    {
+        var todoList = DatabaseTestTool.TodoListFaker.Generate();
+        await DbContext.AddAsync(todoList);
+        await DbContext.SaveChangesAsync();
+
+        var repo = new TodoListRepository(DbContext);
+
+        var res = await repo.Exists(todoList.Id);
+        
+        Assert.True(res);
+    }
+
+    [Fact]
+    public async Task Exists_ShouldReturnFalseWhenNotExists()
+    {
+        var repo = new TodoListRepository(DbContext);
+
+        var res = await repo.Exists(1);
+        
+        Assert.False(res);
+    }
 }
