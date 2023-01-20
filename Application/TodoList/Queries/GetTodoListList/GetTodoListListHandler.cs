@@ -2,17 +2,15 @@ using Application.Common;
 using Application.Common.Pagination;
 using Application.Common.Response;
 using Infrastructure.Repositories.TodoList;
-using Microsoft.AspNetCore.Http;
 
 namespace Application.TodoList.Queries.GetTodoListList;
 
 public class GetTodoListListHandler : AbstractRequestHandler<GetTodoListListQuery,
     StdResponse<PaginationModel<GetTodoListListDto>>>
 {
-    public ITodoListRepository TodoListRepository { get; }
+    private ITodoListRepository TodoListRepository { get; }
 
-    public GetTodoListListHandler(IHttpContextAccessor? httpContextAccessor, ITodoListRepository todoListRepository)
-        : base(httpContextAccessor)
+    public GetTodoListListHandler(ITodoListRepository todoListRepository)
     {
         TodoListRepository = todoListRepository;
     }

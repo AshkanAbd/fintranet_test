@@ -4,19 +4,20 @@ using Application.Common.Response;
 using Application.Common.Validation;
 using Application.TodoItem.Queries.GetTodoItemList;
 using Infrastructure.Repositories.TodoItem;
-using Microsoft.AspNetCore.Http;
+using MediatR;
 
 namespace Application.TodoItem.Commands.UpdateTodoItem;
 
 public class UpdateTodoItemCommandHandler :
     AbstractRequestHandler<UpdateTodoItemCommand, StdResponse<PaginationModel<GetTodoItemListDto>>>
 {
-    public ITodoItemRepository TodoItemRepository { get; set; }
+    private ITodoItemRepository TodoItemRepository { get; }
+    private IMediator Mediator { get; }
 
-    public UpdateTodoItemCommandHandler(IHttpContextAccessor? httpContextAccessor,
-        ITodoItemRepository todoItemRepository) : base(httpContextAccessor)
+    public UpdateTodoItemCommandHandler(ITodoItemRepository todoItemRepository, IMediator mediator)
     {
         TodoItemRepository = todoItemRepository;
+        Mediator = mediator;
     }
 
     public override async Task<StdResponse<PaginationModel<GetTodoItemListDto>>> Handle(UpdateTodoItemCommand request,
@@ -37,7 +38,7 @@ public class UpdateTodoItemCommandHandler :
             Priority = request.Priority!.Value,
         }, _);
 
-        var todoListList = await Mediator!.Send(new GetTodoItemListQuery {
+        var todoListList = await Mediator.Send(new GetTodoItemListQuery {
             TodoListId = todoItem.TodoListId,
             Page = request.Page,
             PageSize = request.PageSize,

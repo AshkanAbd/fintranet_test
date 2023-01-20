@@ -1,25 +1,11 @@
 using Application.Common.Response;
 using MediatR;
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace Application.Common;
 
 public abstract class AbstractRequestHandler<TRequest, TResponse> : IRequestHandler<TRequest, TResponse>
     where TRequest : IRequest<TResponse>
 {
-    private IMediator? _mediator;
-
-    protected AbstractRequestHandler(IHttpContextAccessor? httpContextAccessor)
-    {
-        HttpContext = httpContextAccessor?.HttpContext;
-    }
-
-    protected HttpContext? HttpContext { get; }
-
-
-    public IMediator? Mediator => _mediator ??= HttpContext?.RequestServices.GetService<IMediator>();
-
     public abstract Task<TResponse> Handle(TRequest request, CancellationToken _);
 
     protected StdResponse<T> Ok<T>(T? data = default, string msg = "Success") where T : class
@@ -82,7 +68,8 @@ public abstract class AbstractRequestHandler<TRequest, TResponse> : IRequestHand
         return StdResponseFactory.ValidationErrorMsg<T>(msg);
     }
 
-    protected StdResponse<T> InternalError<T>(object? data = default, string msg = "ServerInternalError") where T : class
+    protected StdResponse<T> InternalError<T>(object? data = default, string msg = "ServerInternalError")
+        where T : class
     {
         return StdResponseFactory.InternalError<T>(data, msg);
     }

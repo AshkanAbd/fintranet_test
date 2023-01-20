@@ -3,19 +3,20 @@ using Application.Common.Pagination;
 using Application.Common.Response;
 using Application.TodoList.Queries.GetTodoListList;
 using Infrastructure.Repositories.TodoList;
-using Microsoft.AspNetCore.Http;
+using MediatR;
 
 namespace Application.TodoList.Commands.DeleteTodoList;
 
 public class DeleteTodoListCommandHandler :
     AbstractRequestHandler<DeleteTodoListCommand, StdResponse<PaginationModel<GetTodoListListDto>>>
 {
-    public ITodoListRepository TodoListRepository { get; }
+    private ITodoListRepository TodoListRepository { get; }
+    private IMediator Mediator { get; }
 
-    public DeleteTodoListCommandHandler(IHttpContextAccessor? httpContextAccessor,
-        ITodoListRepository todoListRepository) : base(httpContextAccessor)
+    public DeleteTodoListCommandHandler(ITodoListRepository todoListRepository, IMediator mediator)
     {
         TodoListRepository = todoListRepository;
+        Mediator = mediator;
     }
 
     public override async Task<StdResponse<PaginationModel<GetTodoListListDto>>> Handle(DeleteTodoListCommand request,
@@ -27,7 +28,7 @@ public class DeleteTodoListCommandHandler :
 
         await TodoListRepository.Remove(request.Id, _);
 
-        var todoListList = await Mediator!.Send(new GetTodoListListQuery {
+        var todoListList = await Mediator.Send(new GetTodoListListQuery {
             Page = request.Page,
             PageSize = request.PageSize,
         }, _);

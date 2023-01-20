@@ -5,21 +5,23 @@ using Application.Common.Validation;
 using Application.TodoItem.Queries.GetTodoItemList;
 using Infrastructure.Repositories.TodoItem;
 using Infrastructure.Repositories.TodoList;
-using Microsoft.AspNetCore.Http;
+using MediatR;
 
 namespace Application.TodoItem.Commands.CreateTodoItem;
 
 public class CreateTodoItemCommandHandler :
     AbstractRequestHandler<CreateTodoItemCommand, StdResponse<PaginationModel<GetTodoItemListDto>>>
 {
-    public ITodoItemRepository TodoItemRepository { get; }
-    public ITodoListRepository TodoListRepository { get; set; }
+    private ITodoItemRepository TodoItemRepository { get; }
+    private ITodoListRepository TodoListRepository { get; }
+    private IMediator Mediator { get; }
 
-    public CreateTodoItemCommandHandler(IHttpContextAccessor? httpContextAccessor,
-        ITodoItemRepository todoItemRepository, ITodoListRepository todoListRepository) : base(httpContextAccessor)
+    public CreateTodoItemCommandHandler(ITodoItemRepository todoItemRepository, ITodoListRepository todoListRepository,
+        IMediator mediator)
     {
         TodoItemRepository = todoItemRepository;
         TodoListRepository = todoListRepository;
+        Mediator = mediator;
     }
 
     public override async Task<StdResponse<PaginationModel<GetTodoItemListDto>>> Handle(CreateTodoItemCommand request,
@@ -41,7 +43,7 @@ public class CreateTodoItemCommandHandler :
             TodoListId = request.TodoListId,
         }, _);
 
-        var todoListList = await Mediator!.Send(new GetTodoItemListQuery {
+        var todoListList = await Mediator.Send(new GetTodoItemListQuery {
             TodoListId = request.TodoListId,
             Page = request.Page,
             PageSize = request.PageSize,
