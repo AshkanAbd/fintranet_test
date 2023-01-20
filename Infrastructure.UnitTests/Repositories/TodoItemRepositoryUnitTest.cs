@@ -201,4 +201,29 @@ public class TodoItemRepositoryUnitTest : AbstractDatabaseTest
 
         Assert.Null(res);
     }
+
+    [Fact]
+    public async Task Exists_ShouldReturnTrueWhenExists()
+    {
+        var todoItem = DatabaseTestTool.TodoItemFaker.Generate();
+        todoItem.TodoList = DatabaseTestTool.TodoListFaker.Generate();
+        await DbContext.AddAsync(todoItem);
+        await DbContext.SaveChangesAsync();
+
+        var repo = new TodoItemRepository(DbContext);
+
+        var res = await repo.Exists(todoItem.Id);
+
+        Assert.True(res);
+    }
+
+    [Fact]
+    public async Task Exists_ShouldReturnFalseWhenNotExists()
+    {
+        var repo = new TodoItemRepository(DbContext);
+
+        var res = await repo.Exists(1);
+
+        Assert.False(res);
+    }
 }

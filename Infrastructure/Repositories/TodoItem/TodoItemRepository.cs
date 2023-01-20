@@ -22,6 +22,11 @@ public class TodoItemRepository : ITodoItemRepository
         return todoItem;
     }
 
+    public async Task<bool> Exists(long id, CancellationToken cancellationToken = default)
+    {
+        return await DbContext.TodoItems.AnyAsync(x => x.Id == id, cancellationToken);
+    }
+
     public async Task<Domain.Models.TodoItem?> Get(long id, CancellationToken cancellationToken = default)
     {
         return await DbContext.TodoItems.FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
