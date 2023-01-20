@@ -50,7 +50,10 @@ public class TodoItemRepository : ITodoItemRepository
         item.Title = todoItem.Title;
         item.Note = todoItem.Note;
         item.Priority = todoItem.Priority;
-        item.TodoListId = todoItem.TodoListId;
+
+        if (todoItem.TodoListId != 0) {
+            item.TodoListId = todoItem.TodoListId;
+        }
 
         await DbContext.SaveChangesAsync(cancellationToken);
         return item;
