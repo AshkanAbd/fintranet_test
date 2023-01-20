@@ -2,7 +2,6 @@ using System.Collections;
 using FluentValidation;
 using FluentValidation.Results;
 using Microsoft.AspNetCore.Http;
-using Microsoft.EntityFrameworkCore;
 
 namespace Application.Common.Validation;
 
@@ -38,7 +37,7 @@ public static class ValidationsTools
         this IRuleBuilderOptions<T, TProperty> rule
     )
     {
-        return rule.WithMessage(Validator<T, DbContext>.Default);
+        return rule.WithMessage(Validator<T>.Default);
     }
 
     public static IRuleBuilderOptions<T, TProperty> WithDefaultMessage<T, TProperty>(
@@ -46,45 +45,35 @@ public static class ValidationsTools
     )
     {
         return rule.WithMessage(
-            string.IsNullOrWhiteSpace(errorMessage) ? Validator<T, DbContext>.Default : errorMessage);
+            string.IsNullOrWhiteSpace(errorMessage) ? Validator<T>.Default : errorMessage);
     }
 
-    public static IRuleBuilderOptions<T, string> PhoneNumber<T>(this IRuleBuilder<T, string> rule)
+    public static IRuleBuilderOptions<T, string> PhoneNumber<T>(this IRuleBuilder<T, string?> rule)
     {
         return rule.Matches("^(09)[0-9]{9}$");
     }
 
-    public static IRuleBuilderOptions<T, string> Color<T>(this IRuleBuilder<T, string> rule)
+    public static IRuleBuilderOptions<T, string> Color<T>(this IRuleBuilder<T, string?> rule)
     {
         return rule.Matches("^#([a-f0-9]{3}){1,2}$");
     }
 
-    public static IRuleBuilderOptions<T, string> Domain<T>(this IRuleBuilder<T, string> rule)
+    public static IRuleBuilderOptions<T, string> Domain<T>(this IRuleBuilder<T, string?> rule)
     {
         return rule.Matches("^((https?):\\/\\/)?(www\\.)?([a-z0-9](\\.?))+\\.[a-z]{2,}(\\/?)$");
     }
 
-    public static IRuleBuilderOptions<T, string> Url<T>(this IRuleBuilder<T, string> rule)
+    public static IRuleBuilderOptions<T, string> Url<T>(this IRuleBuilder<T, string?> rule)
     {
         return rule.Matches("^((https?):\\/\\/)?(www\\.)?([a-z0-9](\\.?))+\\.[a-z]{2,}(\\/?)(.*)$");
     }
 
-    public static IRuleBuilderOptions<T, string> Gender<T>(this IRuleBuilder<T, string> rule)
-    {
-        return rule.Must(x => x == "آقا" || x == "خانم");
-    }
-
-    public static IRuleBuilderOptions<T, string> NationalCode<T>(this IRuleBuilder<T, string> rule)
-    {
-        return rule.Matches("^[0-9]{10}$");
-    }
-
-    public static IRuleBuilderOptions<T, string> Number<T>(this IRuleBuilder<T, string> rule)
+    public static IRuleBuilderOptions<T, string> Number<T>(this IRuleBuilder<T, string?> rule)
     {
         return rule.Matches("^[0-9]+$");
     }
 
-    public static IRuleBuilderOptions<T, string> Number<T>(this IRuleBuilder<T, string> rule, int digitCount)
+    public static IRuleBuilderOptions<T, string> Number<T>(this IRuleBuilder<T, string?> rule, int digitCount)
     {
         return rule.Matches($"^[0-9]{{{digitCount}}}$");
     }

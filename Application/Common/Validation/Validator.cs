@@ -1,19 +1,11 @@
 ﻿using FluentValidation;
 using FluentValidation.Results;
-using Microsoft.EntityFrameworkCore;
 
 namespace Application.Common.Validation;
 
-public abstract class Validator<T, TC> : AbstractValidator<T> where TC : DbContext
+public abstract class Validator<T> : AbstractValidator<T>
 {
     public static string Default = "Bad request";
-
-    protected Validator(TC? dbContext = null)
-    {
-        DbContext = dbContext;
-    }
-
-    protected TC? DbContext { get; set; }
 
     public ValidationResult StdValidate(ValidationContext<T> context)
     {
