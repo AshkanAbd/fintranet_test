@@ -1,13 +1,15 @@
 using Application.Common;
+using Application.Common.Pagination;
 using Application.Common.Response;
 using Application.Common.Validation;
+using Application.TodoList.Queries.GetTodoListList;
 using Infrastructure.Repositories.TodoList;
 using Microsoft.AspNetCore.Http;
 
 namespace Application.TodoList.Commands.UpdateTodoList;
 
 public class UpdateTodoListCommandHandler :
-    AbstractRequestHandler<UpdateTodoListCommand, StdResponse<UpdateTodoListDto>>
+    AbstractRequestHandler<UpdateTodoListCommand, StdResponse<PaginationModel<GetTodoListListDto>>>
 {
     public ITodoListRepository TodoListRepository { get; }
 
@@ -17,30 +19,29 @@ public class UpdateTodoListCommandHandler :
         TodoListRepository = todoListRepository;
     }
 
-    public override async Task<StdResponse<UpdateTodoListDto>> Handle(UpdateTodoListCommand request,
+    public override async Task<StdResponse<PaginationModel<GetTodoListListDto>>> Handle(UpdateTodoListCommand request,
         CancellationToken _)
     {
         var validationResult = await new UpdateTodoListValidator().StdValidateAsync(request, _);
         if (validationResult.Failed()) {
-            return ValidationError<UpdateTodoListDto>(validationResult.Messages());
+            return ValidationError<PaginationModel<GetTodoListListDto>>(validationResult.Messages());
         }
 
         if (!await TodoListRepository.Exists(request.Id, _)) {
-            return NotFoundMsg<UpdateTodoListDto>();
+            return NotFoundMsg<PaginationModel<GetTodoListListDto>>("Todo list notfound.");
         }
 
-        var todoList = (await TodoListRepository.Get(request.Id, _))!;
-        todoList.Title = request.Title!;
-        todoList.Color = request.Color!;
+        await TodoListRepository.Update(request.Id, new Domain.Models.TodoList {
+            Title = request.Title!,
+            Color = request.Color!,
+        }, _);
 
-        todoList = await TodoListRepository.Update(request.Id, todoList, _);
+        var todoListList = await Mediator!.Send(new GetTodoListListQuery {
+            Page = request.Page,
+            PageSize = request.PageSize,
+        }, _);
+        todoListList.Message = "Todo list updated.";
 
-        return Ok(new UpdateTodoListDto {
-            Id = todoList.Id,
-            Title = todoList.Title,
-            Color = todoList.Color,
-            CreatedAt = todoList.CreatedAt,
-            UpdatedAt = todoList.UpdatedAt,
-        });
+        return todoListList;
     }
 }
