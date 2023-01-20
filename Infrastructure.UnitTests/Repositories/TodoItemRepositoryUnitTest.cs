@@ -1,23 +1,20 @@
-using Domain.Models;
 using Infrastructure.Repositories.TodoItem;
 using Infrastructure.UnitTests.Common;
 using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.UnitTests.Repositories;
 
-public class TodoItemRepositoryUnitTest
+public class TodoItemRepositoryUnitTest : AbstractDatabaseTest
 {
     [Fact]
     public async Task Add_ShouldAddEntityToDatabase()
     {
-        await using var dbContext = await DatabaseTestTool.GetTestDbContext();
-
         var todoList = DatabaseTestTool.TodoListFaker.Generate();
 
-        await dbContext.TodoLists.AddAsync(todoList);
-        await dbContext.SaveChangesAsync();
+        await DbContext.TodoLists.AddAsync(todoList);
+        await DbContext.SaveChangesAsync();
 
-        var repo = new TodoItemRepository(dbContext);
+        var repo = new TodoItemRepository(DbContext);
 
         var todoItem = DatabaseTestTool.TodoItemFaker.Generate();
         todoItem.TodoListId = todoList.Id;
@@ -37,9 +34,7 @@ public class TodoItemRepositoryUnitTest
     [Fact]
     public async Task Add_ShouldThrowErrorWhenTodoListDoesNotExists()
     {
-        await using var dbContext = await DatabaseTestTool.GetTestDbContext();
-
-        var repo = new TodoItemRepository(dbContext);
+        var repo = new TodoItemRepository(DbContext);
 
         var todoItem = DatabaseTestTool.TodoItemFaker.Generate();
 
@@ -56,15 +51,13 @@ public class TodoItemRepositoryUnitTest
     [Fact]
     public async Task Get_ShouldReturnTodoItem()
     {
-        await using var dbContext = await DatabaseTestTool.GetTestDbContext();
-
         var todoList = DatabaseTestTool.TodoListFaker.Generate();
         var todoItem = DatabaseTestTool.TodoItemFaker.Generate();
         todoItem.TodoList = todoList;
-        await dbContext.AddAsync(todoItem);
-        await dbContext.SaveChangesAsync();
+        await DbContext.AddAsync(todoItem);
+        await DbContext.SaveChangesAsync();
 
-        var repo = new TodoItemRepository(dbContext);
+        var repo = new TodoItemRepository(DbContext);
 
         var res = await repo.Get(todoItem.Id);
 
@@ -82,9 +75,7 @@ public class TodoItemRepositoryUnitTest
     [Fact]
     public async Task Get_ShouldReturnNullWhenNotExsits()
     {
-        await using var dbContext = await DatabaseTestTool.GetTestDbContext();
-
-        var repo = new TodoItemRepository(dbContext);
+        var repo = new TodoItemRepository(DbContext);
 
         var res = await repo.Get(1);
 
@@ -94,14 +85,13 @@ public class TodoItemRepositoryUnitTest
     [Fact]
     public async Task GetWithPagination_ShouldReturnItemsWithPagination()
     {
-        await using var dbContext = await DatabaseTestTool.GetTestDbContext();
         var todoList = DatabaseTestTool.TodoListFaker.Generate();
         var todoItem = DatabaseTestTool.TodoItemFaker.Generate(10);
         todoList.TodoItems = todoItem;
-        await dbContext.AddAsync(todoList);
-        await dbContext.SaveChangesAsync();
+        await DbContext.AddAsync(todoList);
+        await DbContext.SaveChangesAsync();
 
-        var repo = new TodoItemRepository(dbContext);
+        var repo = new TodoItemRepository(DbContext);
 
         var res = await repo.GetWithPagination(
             todoList.Id, 1, 3
@@ -129,14 +119,13 @@ public class TodoItemRepositoryUnitTest
     [Fact]
     public async Task Update_ShouldUpdateEntityInDatabaseWhenExistsInTracker()
     {
-        await using var dbContext = await DatabaseTestTool.GetTestDbContext();
         var todoList = DatabaseTestTool.TodoListFaker.Generate();
         var todoItem = DatabaseTestTool.TodoItemFaker.Generate();
         todoItem.TodoList = todoList;
-        await dbContext.AddAsync(todoItem);
-        await dbContext.SaveChangesAsync();
+        await DbContext.AddAsync(todoItem);
+        await DbContext.SaveChangesAsync();
 
-        var repo = new TodoItemRepository(dbContext);
+        var repo = new TodoItemRepository(DbContext);
         var newItem = DatabaseTestTool.TodoItemFaker.Generate();
         newItem.TodoListId = todoList.Id;
 
@@ -154,15 +143,14 @@ public class TodoItemRepositoryUnitTest
     [Fact]
     public async Task Update_ShouldUpdateEntityInDatabaseWhenNotExistsInTracker()
     {
-        await using var dbContext = await DatabaseTestTool.GetTestDbContext();
         var todoList = DatabaseTestTool.TodoListFaker.Generate();
         var todoItem = DatabaseTestTool.TodoItemFaker.Generate();
         todoItem.TodoList = todoList;
-        await dbContext.AddAsync(todoItem);
-        await dbContext.SaveChangesAsync();
-        dbContext.ChangeTracker.Clear();
+        await DbContext.AddAsync(todoItem);
+        await DbContext.SaveChangesAsync();
+        DbContext.ChangeTracker.Clear();
 
-        var repo = new TodoItemRepository(dbContext);
+        var repo = new TodoItemRepository(DbContext);
         var newItem = DatabaseTestTool.TodoItemFaker.Generate();
         newItem.TodoListId = todoList.Id;
 
@@ -180,14 +168,13 @@ public class TodoItemRepositoryUnitTest
     [Fact]
     public async Task Remove_ShouldRemoveEntityFromDatabaseWhenExistsInTracker()
     {
-        await using var dbContext = await DatabaseTestTool.GetTestDbContext();
         var todoList = DatabaseTestTool.TodoListFaker.Generate();
         var todoItem = DatabaseTestTool.TodoItemFaker.Generate();
         todoItem.TodoList = todoList;
-        await dbContext.AddAsync(todoItem);
-        await dbContext.SaveChangesAsync();
+        await DbContext.AddAsync(todoItem);
+        await DbContext.SaveChangesAsync();
 
-        var repo = new TodoItemRepository(dbContext);
+        var repo = new TodoItemRepository(DbContext);
 
         await repo.Remove(todoItem.Id);
 
@@ -199,15 +186,14 @@ public class TodoItemRepositoryUnitTest
     [Fact]
     public async Task Remove_ShouldRemoveEntityFromDatabaseWhenNotExistsInTracker()
     {
-        await using var dbContext = await DatabaseTestTool.GetTestDbContext();
         var todoList = DatabaseTestTool.TodoListFaker.Generate();
         var todoItem = DatabaseTestTool.TodoItemFaker.Generate();
         todoItem.TodoList = todoList;
-        await dbContext.AddAsync(todoItem);
-        await dbContext.SaveChangesAsync();
-        dbContext.ChangeTracker.Clear();
+        await DbContext.AddAsync(todoItem);
+        await DbContext.SaveChangesAsync();
+        DbContext.ChangeTracker.Clear();
 
-        var repo = new TodoItemRepository(dbContext);
+        var repo = new TodoItemRepository(DbContext);
 
         await repo.Remove(todoItem.Id);
 

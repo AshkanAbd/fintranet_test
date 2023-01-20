@@ -6,13 +6,13 @@ namespace Infrastructure.UnitTests.Common;
 
 public class DatabaseTestTool
 {
-    const string ConnectionString =
-        "Server=127.0.0.1,1433;Database=TestDb;UID=sa;PWD=Ashkan007;";
+    private static int DbNameCounter;
 
     public static async Task<AppDbContext> GetTestDbContext()
     {
+        var connectionString = $"Server=127.0.0.1,1433;Database=TestDb{DbNameCounter++};UID=sa;PWD=Ashkan007;";
         var options = new DbContextOptionsBuilder<AppDbContext>()
-            .UseSqlServer(ConnectionString)
+            .UseSqlServer(connectionString)
             .Options;
 
         var dbContext = new AppDbContext(options);
@@ -21,6 +21,11 @@ public class DatabaseTestTool
         await dbContext.Database.MigrateAsync();
 
         return dbContext;
+    }
+
+    public static async Task Cleanup(AppDbContext dbContext)
+    {
+        await dbContext.Database.EnsureDeletedAsync();
     }
 
     public static Faker<TodoItem> TodoItemFaker = new Faker<TodoItem>()

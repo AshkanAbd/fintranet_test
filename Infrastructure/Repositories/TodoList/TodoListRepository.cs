@@ -30,7 +30,9 @@ public class TodoListRepository : ITodoListRepository
     public async Task<PaginationModel<Domain.Models.TodoList>> GetWithPagination(int? page, int? pageSize,
         CancellationToken cancellationToken = default)
     {
-        return await DbContext.TodoLists.UsePaginationAsync(page, pageSize, cancellationToken);
+        return await DbContext.TodoLists
+            .OrderByDescending(x=>x.CreatedAt)
+            .UsePaginationAsync(page, pageSize, cancellationToken);
     }
 
     public async Task<Domain.Models.TodoList> Update(long id, Domain.Models.TodoList todoList,
