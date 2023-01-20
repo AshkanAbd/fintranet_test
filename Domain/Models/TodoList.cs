@@ -11,7 +11,7 @@ public class TodoList : SoftDeletes.ModelTools.ModelExtension
     public string Title { get; set; }
     public string Color { get; set; }
 
-    public List<TodoItem> TodoItems { get; set; }
+    public IEnumerable<TodoItem> TodoItems { get; set; }
 
     public override async Task OnSoftDeleteAsync(DbContext context, CancellationToken cancellationToken = default)
     {

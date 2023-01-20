@@ -9,7 +9,7 @@ public interface ITodoItemRepository
 
     public Task<Domain.Models.TodoItem?> Get(long id, CancellationToken cancellationToken = default);
 
-    public Task<PaginationModel<Domain.Models.TodoItem>> GetWithPagination(int? page, int? pageSize,
+    public Task<PaginationModel<Domain.Models.TodoItem>> GetWithPagination(long todoListId, int? page, int? pageSize,
         CancellationToken cancellationToken = default);
 
     public Task<Domain.Models.TodoItem> Update(long id, Domain.Models.TodoItem todoItem,

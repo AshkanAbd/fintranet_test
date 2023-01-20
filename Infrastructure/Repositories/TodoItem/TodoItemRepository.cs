@@ -27,10 +27,14 @@ public class TodoItemRepository : ITodoItemRepository
         return await DbContext.TodoItems.FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
     }
 
-    public async Task<PaginationModel<Domain.Models.TodoItem>> GetWithPagination(int? page, int? pageSize,
-        CancellationToken cancellationToken = default)
+    public async Task<PaginationModel<Domain.Models.TodoItem>> GetWithPagination(long todoListId, int? page,
+        int? pageSize, CancellationToken cancellationToken = default)
     {
-        return await DbContext.TodoItems.UsePaginationAsync(page, pageSize, cancellationToken);
+        return await DbContext.TodoItems
+            .AsNoTracking()
+            .Where(x => x.TodoListId == todoListId)
+            .OrderByDescending(x => x.Priority)
+            .UsePaginationAsync(page, pageSize, cancellationToken);
     }
 
     public async Task<Domain.Models.TodoItem> Update(long id, Domain.Models.TodoItem todoItem,

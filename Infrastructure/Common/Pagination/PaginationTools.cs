@@ -11,25 +11,20 @@ public static class PaginationTools
             page = 1;
         }
 
-        if (pageSize == 0 || pageSize < -1) {
+        if (pageSize <= 0) {
             pageSize = 10;
         }
     }
-    
+
     public static async Task<PaginationModel<T>> UsePaginationAsync<T>(this IQueryable<T> query, int? page = null,
         int? pageSize = null, CancellationToken cancellationToken = default)
     {
         NormalizePagination(ref page, ref pageSize);
         var iPage = page ?? 1;
         var iPageSize = pageSize ?? 1;
-        var count = query.Count();
+        var count = await query.CountAsync(cancellationToken);
 
-        if (iPageSize != -1) {
-            query = query.Skip((iPage - 1) * iPageSize).Take(iPageSize);
-        }
-        else {
-            iPageSize = count == 0 ? 1 : count;
-        }
+        query = query.Skip((iPage - 1) * iPageSize).Take(iPageSize);
 
         return new PaginationModel<T> {
             List = await query.ToListAsync(cancellationToken),

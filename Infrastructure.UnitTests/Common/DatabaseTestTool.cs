@@ -16,16 +16,17 @@ public class DatabaseTestTool
             .Options;
 
         var dbContext = new AppDbContext(options);
+        await dbContext.Database.EnsureDeletedAsync();
         await dbContext.Database.EnsureCreatedAsync();
         await dbContext.Database.MigrateAsync();
-        
+
         return dbContext;
     }
 
     public static Faker<TodoItem> TodoItemFaker = new Faker<TodoItem>()
         .RuleFor(x => x.Title, f => f.Lorem.Sentences())
         .RuleFor(x => x.Note, f => f.Lorem.Paragraphs())
-        .RuleFor(x => x.Priority, f => f.Random.Int());
+        .RuleFor(x => x.Priority, f => f.Random.Int(1));
 
     public static Faker<TodoList> TodoListFaker = new Faker<TodoList>()
         .RuleFor(x => x.Title, f => f.Lorem.Sentences())
