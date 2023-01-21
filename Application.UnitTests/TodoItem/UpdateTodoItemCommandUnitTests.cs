@@ -58,7 +58,7 @@ public class UpdateTodoItemCommandUnitTests : AbstractTest
 
         var command = new UpdateTodoItemCommand {
             Id = 1,
-            Title = Faker.Lorem.Sentence(3),
+            Title = Faker.Lorem.Sentence(2),
             Note = Faker.Lorem.Sentences(6),
             Priority = Faker.Random.Int(1, 5),
             Page = 1,
@@ -93,12 +93,18 @@ public class UpdateTodoItemCommandUnitTests : AbstractTest
             Times.Once
         );
         todoItemRepoMock.Verify(
+            x => x.Exists(It.IsAny<long>(), It.IsAny<CancellationToken>()),
+            Times.Once
+        );
+        todoItemRepoMock.Verify(
             x => x.Update(
                 It.IsAny<long>(),
                 It.IsAny<Domain.Models.TodoItem>(),
                 It.IsAny<CancellationToken>()
             ), Times.Once
         );
+        mediatorMock.VerifyNoOtherCalls();
+        todoItemRepoMock.VerifyNoOtherCalls();
     }
 
     [Fact]
@@ -128,5 +134,11 @@ public class UpdateTodoItemCommandUnitTests : AbstractTest
         var res = await handler.Handle(command, CancellationToken.None);
         Assert.Equal("Todo item notfound.", res.Message);
         Assert.Equal(HttpStatusCode.NotFound, res.Status);
+
+        todoItemRepoMock.Verify(
+            x => x.Exists(It.IsAny<long>(), It.IsAny<CancellationToken>()),
+            Times.Once
+        );
+        todoItemRepoMock.VerifyNoOtherCalls();
     }
 }

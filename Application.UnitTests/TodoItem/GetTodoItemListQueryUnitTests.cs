@@ -60,12 +60,13 @@ public class GetTodoItemListQueryUnitTests : AbstractTest
             Assert.Equal(todoItems[i].CreatedAt, acutalList[i].CreatedAt);
             Assert.Equal(todoItems[i].UpdatedAt, acutalList[i].UpdatedAt);
         }
-        
+
         todoItemRepoMock.Verify(x => x.GetWithPagination(
             It.IsAny<long>(),
             It.IsAny<int>(),
             It.IsAny<int>(),
             CancellationToken.None
         ), Times.Once);
+        todoItemRepoMock.VerifyNoOtherCalls();
     }
 }

@@ -2,7 +2,7 @@ using Bogus;
 
 namespace Application.UnitTests.Common;
 
-public abstract class AbstractTest: IDisposable
+public abstract class AbstractTest : IDisposable
 {
     public static Faker<Domain.Models.TodoItem> TodoItemFaker = new Faker<Domain.Models.TodoItem>()
         .RuleFor(x => x.Title, f => f.Lorem.Sentences())
@@ -19,6 +19,7 @@ public abstract class AbstractTest: IDisposable
         .RuleFor(x => x.Id, f => f.Random.Int(1, 100))
         .RuleFor(x => x.CreatedAt, f => f.Date.Recent())
         .RuleFor(x => x.UpdatedAt, f => f.Date.Recent());
+
     protected Faker Faker { get; }
 
     protected AbstractTest()

@@ -1,34 +1,33 @@
-using System.Net;
 using Application.Common.Pagination;
 using Application.Common.Response;
-using Application.TodoItem.Commands.CreateTodoItem;
+using Application.TodoItem.Commands.DeleteTodoItem;
 using Application.TodoItem.Queries.GetTodoItemList;
 using Application.UnitTests.Common;
 using Infrastructure.Repositories.TodoItem;
-using Infrastructure.Repositories.TodoList;
 using MediatR;
 
 namespace Application.UnitTests.TodoItem;
 
-public class CreateTodoItemCommandItemUnitTests : AbstractTest
+public class DeleteTodoItemCommandUnitTests : AbstractTest
 {
     [Fact]
-    public async Task CreateTodoItemCommand_ShouldCreateTodoItem()
+    public async Task DeleteTodoItemCommand_ShouldDeleteTodoItem()
     {
         var todoItems = TodoItemFaker.Generate(10);
         todoItems.ForEach(x => x.TodoListId = 1);
 
-        var todoListRepoMock = new Mock<ITodoListRepository>();
         var todoItemRepoMock = new Mock<ITodoItemRepository>();
-
-        todoListRepoMock.Setup(
+        todoItemRepoMock.Setup(
             x => x.Exists(It.IsAny<long>(), It.IsAny<CancellationToken>())
         ).ReturnsAsync(true);
 
         todoItemRepoMock.Setup(
-            x => x.Add(It.IsAny<Domain.Models.TodoItem>(), It.IsAny<CancellationToken>())
-        ).ReturnsAsync((Domain.Models.TodoItem x, CancellationToken _) => x);
+            x => x.Get(It.IsAny<long>(), It.IsAny<CancellationToken>())
+        ).ReturnsAsync((long _, CancellationToken _) => todoItems[0]);
 
+        todoItemRepoMock.Setup(
+            x => x.Remove(It.IsAny<long>(), It.IsAny<CancellationToken>())
+        ).Returns((long _, CancellationToken _) => Task.CompletedTask);
         var mediatorMock = new Mock<IMediator>();
         mediatorMock.Setup(
             x => x.Send(It.IsAny<GetTodoItemListQuery>(), It.IsAny<CancellationToken>())
@@ -51,24 +50,15 @@ public class CreateTodoItemCommandItemUnitTests : AbstractTest
             );
         });
 
-        var handler = new CreateTodoItemCommandHandler(
-            todoItemRepoMock.Object,
-            todoListRepoMock.Object,
-            mediatorMock.Object
-        );
+        var handler = new DeleteTodoItemCommandHandler(todoItemRepoMock.Object, mediatorMock.Object);
 
-        var command = new CreateTodoItemCommand {
-            TodoListId = 1,
-            Title = Faker.Lorem.Sentence(2),
-            Note = Faker.Lorem.Sentences(6),
-            Priority = Faker.Random.Int(1, 5),
+        var command = new DeleteTodoItemCommand {
+            Id = 1,
             Page = 1,
             PageSize = 3,
         };
 
         var res = await handler.Handle(command, CancellationToken.None);
-        Assert.Equal("Todo item created.", res.Message);
-        Assert.Equal(HttpStatusCode.OK, res.Status);
 
         var resValue = res.DataAsDataStruct();
         Assert.NotNull(resValue);
@@ -94,56 +84,22 @@ public class CreateTodoItemCommandItemUnitTests : AbstractTest
             Times.Once
         );
         todoItemRepoMock.Verify(
-            x => x.Add(It.IsAny<Domain.Models.TodoItem>(), It.IsAny<CancellationToken>()),
+            x => x.Exists(
+                It.IsAny<long>(),
+                It.IsAny<CancellationToken>()
+            ), Times.Once
+        );
+        todoItemRepoMock.Verify(
+            x => x.Get(It.IsAny<long>(), It.IsAny<CancellationToken>()),
             Times.Once
         );
-        todoListRepoMock.Verify(
-            x => x.Exists(It.IsAny<long>(), It.IsAny<CancellationToken>()),
+
+        todoItemRepoMock.Verify(
+            x => x.Remove(It.IsAny<long>(), It.IsAny<CancellationToken>()),
             Times.Once
         );
+
         mediatorMock.VerifyNoOtherCalls();
-        todoListRepoMock.VerifyNoOtherCalls();
-        todoListRepoMock.VerifyNoOtherCalls();
-    }
-
-    [Fact]
-    public async Task CreateTodoItemCommand_ShouldReturnNotfoundWhenTodoListDoesnotExists()
-    {
-        var todoListRepoMock = new Mock<ITodoListRepository>();
-        todoListRepoMock.Setup(
-            x => x.Exists(It.IsAny<long>(), It.IsAny<CancellationToken>())
-        ).ReturnsAsync(false);
-
-        var todoItemRepoMock = new Mock<ITodoItemRepository>();
-        var mediatorMock = new Mock<IMediator>();
-
-        var handler = new CreateTodoItemCommandHandler(
-            todoItemRepoMock.Object,
-            todoListRepoMock.Object,
-            mediatorMock.Object
-        );
-
-        var command = new CreateTodoItemCommand {
-            TodoListId = 1,
-            Title = Faker.Lorem.Sentence(2),
-            Note = Faker.Lorem.Sentences(6),
-            Priority = Faker.Random.Int(1, 5),
-            Page = 1,
-            PageSize = 3,
-        };
-
-        var res = await handler.Handle(command, CancellationToken.None);
-
-        Assert.Equal("Todo list notfound.", res.Message);
-        Assert.Equal(HttpStatusCode.NotFound, res.Status);
-        Assert.Null(res.Data);
-
-        todoListRepoMock.Verify(
-            x => x.Exists(It.IsAny<long>(), It.IsAny<CancellationToken>()),
-            Times.Once
-        );
-        mediatorMock.VerifyNoOtherCalls();
-        todoListRepoMock.VerifyNoOtherCalls();
-        todoListRepoMock.VerifyNoOtherCalls();
+        todoItemRepoMock.VerifyNoOtherCalls();
     }
 }
