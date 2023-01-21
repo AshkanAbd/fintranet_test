@@ -20,7 +20,7 @@ public class GetTodoItemListQueryUnitTests : AbstractTest
                 It.IsAny<long>(),
                 It.IsAny<int>(),
                 It.IsAny<int>(),
-                CancellationToken.None
+                It.IsAny<CancellationToken>()
             )
         ).ReturnsAsync((long _, int page, int pageSize, CancellationToken _) =>
             new PaginationModel<Domain.Models.TodoItem> {
@@ -45,7 +45,7 @@ public class GetTodoItemListQueryUnitTests : AbstractTest
         Assert.Equal(HttpStatusCode.OK, res.Status);
         var resValue = res.DataAsDataStruct();
         Assert.NotNull(resValue);
-        Assert.Equal(query.Page, resValue.CurrentPage);
+        Assert.Equal(query.Page, resValue!.CurrentPage);
         Assert.Equal(query.PageSize, resValue.CurrentPageSize);
         Assert.Equal((int) Math.Ceiling(todoItems.Count / (double) query.PageSize), resValue.PageCount);
         Assert.Equal(todoItems.Count, resValue.Total);
