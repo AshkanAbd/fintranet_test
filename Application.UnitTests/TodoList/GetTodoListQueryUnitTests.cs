@@ -75,15 +75,15 @@ public class GetTodoListQueryUnitTests : AbstractTest
         Assert.Equal(todoItems.Count, resTodoList.TodoItemList.Total);
         Assert.Equal((int) Math.Ceiling(todoItems.Count / (double) query.PageSize), resTodoList.TodoItemList.PageCount);
 
-        var acutalList = resTodoList.TodoItemList.List.ToList();
+        var actualList = resTodoList.TodoItemList.List.ToList();
         var expectedList = todoItems.Skip((query.Page!.Value - 1) * query.PageSize!.Value).ToList();
         for (var i = 0; i < query.PageSize; i++) {
-            Assert.Equal(expectedList[i].Id, acutalList[i].Id);
-            Assert.Equal(expectedList[i].Title, acutalList[i].Title);
-            Assert.Equal(expectedList[i].Note, acutalList[i].Note);
-            Assert.Equal(expectedList[i].Priority, acutalList[i].Priority);
-            Assert.Equal(expectedList[i].CreatedAt, acutalList[i].CreatedAt);
-            Assert.Equal(expectedList[i].UpdatedAt, acutalList[i].UpdatedAt);
+            Assert.Equal(expectedList[i].Id, actualList[i].Id);
+            Assert.Equal(expectedList[i].Title, actualList[i].Title);
+            Assert.Equal(expectedList[i].Note, actualList[i].Note);
+            Assert.Equal(expectedList[i].Priority, actualList[i].Priority);
+            Assert.Equal(expectedList[i].CreatedAt, actualList[i].CreatedAt);
+            Assert.Equal(expectedList[i].UpdatedAt, actualList[i].UpdatedAt);
         }
 
         mediatorMock.Verify(

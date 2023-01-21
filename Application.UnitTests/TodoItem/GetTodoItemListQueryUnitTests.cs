@@ -51,14 +51,14 @@ public class GetTodoItemListQueryUnitTests : AbstractTest
         Assert.Equal(todoItems.Count, resValue.Total);
         Assert.Equal(query.PageSize, resValue.List.Count());
 
-        var acutalList = resValue.List.ToList();
+        var actualList = resValue.List.ToList();
         for (var i = 0; i < query.PageSize; i++) {
-            Assert.Equal(todoItems[i].Id, acutalList[i].Id);
-            Assert.Equal(todoItems[i].Title, acutalList[i].Title);
-            Assert.Equal(todoItems[i].Note, acutalList[i].Note);
-            Assert.Equal(todoItems[i].Priority, acutalList[i].Priority);
-            Assert.Equal(todoItems[i].CreatedAt, acutalList[i].CreatedAt);
-            Assert.Equal(todoItems[i].UpdatedAt, acutalList[i].UpdatedAt);
+            Assert.Equal(todoItems[i].Id, actualList[i].Id);
+            Assert.Equal(todoItems[i].Title, actualList[i].Title);
+            Assert.Equal(todoItems[i].Note, actualList[i].Note);
+            Assert.Equal(todoItems[i].Priority, actualList[i].Priority);
+            Assert.Equal(todoItems[i].CreatedAt, actualList[i].CreatedAt);
+            Assert.Equal(todoItems[i].UpdatedAt, actualList[i].UpdatedAt);
         }
 
         todoItemRepoMock.Verify(x => x.GetWithPagination(
