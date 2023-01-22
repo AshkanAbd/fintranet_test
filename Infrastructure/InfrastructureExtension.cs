@@ -14,7 +14,7 @@ public static class InfrastructureExtension
             options.UseSqlServer(
                 configuration.GetConnectionString("DatabaseConnection")
             );
-            if (configuration["ComponentConfig:Environment"].Equals("Development")) {
+            if (configuration["Environment"].Equals("Development")) {
                 options.EnableSensitiveDataLogging();
             }
         });
