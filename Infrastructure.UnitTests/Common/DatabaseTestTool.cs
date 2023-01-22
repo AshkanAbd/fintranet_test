@@ -6,7 +6,7 @@ namespace Infrastructure.UnitTests.Common;
 
 public class DatabaseTestTool
 {
-    private static int DbNameCounter;
+    private static int DbNameCounter = 0;
 
     public static async Task<AppDbContext> GetTestDbContext()
     {
@@ -17,7 +17,6 @@ public class DatabaseTestTool
 
         var dbContext = new AppDbContext(options);
         await dbContext.Database.EnsureDeletedAsync();
-        await dbContext.Database.EnsureCreatedAsync();
         await dbContext.Database.MigrateAsync();
 
         return dbContext;
