@@ -11,11 +11,11 @@ public class StdResponse<TValue> where TValue : class
         Message = message;
         Data = data;
     }
-    
+
     public object? Data { get; set; }
-    public TValue DataStruct { get; set; }
+    public TValue? DataStruct { get; set; }
     public HttpStatusCode Status { get; set; }
     public string? Message { get; set; }
 
-    public TValue? DataAsDataStruct() =>  Data as TValue;
+    public TValue? DataAsDataStruct() => Data as TValue;
 }

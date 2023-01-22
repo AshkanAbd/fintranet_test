@@ -1,6 +1,8 @@
 using System.Reflection;
 using System.Text.Json;
 using Application.Common.Response;
+using Application.TodoItem;
+using Application.TodoList;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
@@ -13,6 +15,9 @@ public static class ApplicationExtension
     public static IServiceCollection AddApplication(this IServiceCollection services)
     {
         services.AddMediatR(Assembly.GetExecutingAssembly());
+
+        services.AddTransient<ITodoItemService, TodoItemService>();
+        services.AddTransient<ITodoListService, TodoListService>();
 
         return services;
     }

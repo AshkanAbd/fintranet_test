@@ -1,10 +1,10 @@
 using Application.Common.Pagination;
 using Application.Common.Response;
+using Application.TodoItem;
 using Application.TodoItem.Commands.CreateTodoItem;
 using Application.TodoItem.Commands.DeleteTodoItem;
 using Application.TodoItem.Commands.UpdateTodoItem;
 using Application.TodoItem.Queries.GetTodoItemList;
-using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Presentation.Common;
 
@@ -13,20 +13,20 @@ namespace Presentation.Controllers;
 [ApiExplorerSettings(GroupName = "api")]
 public class TodoItemController : ControllerExtension
 {
-    private IMediator Mediator { get; }
-
-    public TodoItemController(IMediator mediator)
+    public TodoItemController(ITodoItemService todoItemService)
     {
-        Mediator = mediator;
+        TodoItemService = todoItemService;
     }
 
+    private ITodoItemService TodoItemService { get; }
+
     [HttpGet("todoList/{TodoListId}/todoItem")]
-    public async Task<ActionResult<StdResponse<PaginationModel<GetTodoItemListDto>>>> GetTodoItem(
+    public async Task<ActionResult<StdResponse<PaginationModel<GetTodoItemListDto>>>> GetTodoItemList(
         [FromQuery] GetTodoItemListQuery query,
         CancellationToken _
     )
     {
-        return FormatResponse(await Mediator.Send(query, _));
+        return FormatResponse(await TodoItemService.GetTodoItemList(query, _));
     }
 
     [HttpPost("todoItem")]
@@ -35,7 +35,7 @@ public class TodoItemController : ControllerExtension
         CancellationToken _
     )
     {
-        return FormatResponse(await Mediator.Send(command, _));
+        return FormatResponse(await TodoItemService.CreateTodoItem(command, _));
     }
 
     [HttpPut("todoItem/{Id}")]
@@ -44,7 +44,7 @@ public class TodoItemController : ControllerExtension
         CancellationToken _
     )
     {
-        return FormatResponse(await Mediator.Send(command, _));
+        return FormatResponse(await TodoItemService.UpdateTodoItem(command, _));
     }
 
     [HttpDelete("todoItem/{Id}")]
@@ -53,6 +53,6 @@ public class TodoItemController : ControllerExtension
         CancellationToken _
     )
     {
-        return FormatResponse(await Mediator.Send(command, _));
+        return FormatResponse(await TodoItemService.DeleteTodoItem(command, _));
     }
 }
