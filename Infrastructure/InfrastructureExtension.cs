@@ -19,8 +19,8 @@ public static class InfrastructureExtension
             }
         });
 
-        services.AddSingleton<ITodoItemRepository, TodoItemRepository>();
-        services.AddSingleton<ITodoListRepository, TodoListRepository>();
+        services.AddScoped<ITodoItemRepository, TodoItemRepository>();
+        services.AddScoped<ITodoListRepository, TodoListRepository>();
 
         return services;
     }
