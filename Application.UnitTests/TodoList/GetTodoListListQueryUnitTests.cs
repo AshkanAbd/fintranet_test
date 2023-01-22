@@ -27,7 +27,7 @@ public class GetTodoListListQueryUnitTests : AbstractTest
                 CurrentPageSize = pageSize.Value,
                 Total = todoLists.Count,
                 List = todoLists.Skip((page.Value - 1) * pageSize.Value)
-                    .Take(page.Value)
+                    .Take(pageSize.Value)
             };
         });
 

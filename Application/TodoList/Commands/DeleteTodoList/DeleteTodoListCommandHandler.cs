@@ -23,7 +23,7 @@ public class DeleteTodoListCommandHandler :
         CancellationToken _)
     {
         if (!await TodoListRepository.Exists(request.Id, _)) {
-            return NotFoundMsg<PaginationModel<GetTodoListListDto>>();
+            return NotFoundMsg<PaginationModel<GetTodoListListDto>>("Todo list notfound.");
         }
 
         await TodoListRepository.Remove(request.Id, _);
@@ -32,7 +32,7 @@ public class DeleteTodoListCommandHandler :
             Page = request.Page,
             PageSize = request.PageSize,
         }, _);
-        todoListList.Message = "Todo list removed";
+        todoListList.Message = "Todo list removed.";
 
         return todoListList;
     }
