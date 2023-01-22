@@ -3,6 +3,7 @@ using Application.Common.Pagination;
 using Application.TodoItem.Queries.GetTodoItemList;
 using Application.UnitTests.Common;
 using Infrastructure.Repositories.TodoItem;
+using Infrastructure.Repositories.TodoList;
 
 namespace Application.UnitTests.TodoItem;
 
@@ -32,7 +33,12 @@ public class GetTodoItemListQueryUnitTests : AbstractTest
             }
         );
 
-        var handler = new GetTodoItemListQueryHandler(todoItemRepoMock.Object);
+        var todoListRepoMock = new Mock<ITodoListRepository>();
+        todoListRepoMock.Setup(
+            x => x.Exists(It.IsAny<long>(), It.IsAny<CancellationToken>())
+        ).ReturnsAsync(true);
+
+        var handler = new GetTodoItemListQueryHandler(todoItemRepoMock.Object, todoListRepoMock.Object);
 
         var query = new GetTodoItemListQuery {
             TodoListId = 1,
@@ -67,6 +73,45 @@ public class GetTodoItemListQueryUnitTests : AbstractTest
             It.IsAny<int>(),
             CancellationToken.None
         ), Times.Once);
+
+        todoListRepoMock.Verify(
+            x => x.Exists(It.IsAny<long>(), It.IsAny<CancellationToken>()),
+            Times.Once
+        );
+
+        todoItemRepoMock.VerifyNoOtherCalls();
+        todoListRepoMock.VerifyNoOtherCalls();
+    }
+
+    [Fact]
+    public async Task GetTodoItemListQuery_ShouldReturnNotFoundWhenTodoListNotExists()
+    {
+        var todoItemRepoMock = new Mock<ITodoItemRepository>();
+
+        var todoListRepoMock = new Mock<ITodoListRepository>();
+        todoListRepoMock.Setup(
+            x => x.Exists(It.IsAny<long>(), It.IsAny<CancellationToken>())
+        ).ReturnsAsync(false);
+
+        var handler = new GetTodoItemListQueryHandler(todoItemRepoMock.Object, todoListRepoMock.Object);
+
+        var query = new GetTodoItemListQuery {
+            TodoListId = 1,
+            Page = 1,
+            PageSize = 5,
+        };
+        var res = await handler.Handle(query, CancellationToken.None);
+
+        Assert.Equal("Todo list notfound.", res.Message);
+        Assert.Equal(HttpStatusCode.NotFound, res.Status);
+        Assert.Null(res.Data);
+
+        todoListRepoMock.Verify(
+            x => x.Exists(It.IsAny<long>(), It.IsAny<CancellationToken>()),
+            Times.Once
+        );
+
+        todoListRepoMock.VerifyNoOtherCalls();
         todoItemRepoMock.VerifyNoOtherCalls();
     }
 }
