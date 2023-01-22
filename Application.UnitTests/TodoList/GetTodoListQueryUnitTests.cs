@@ -69,7 +69,8 @@ public class GetTodoListQueryUnitTests : AbstractTest
         Assert.Equal(todoList.Title, resTodoList.Title);
         Assert.Equal(todoList.Color, resTodoList.Color);
 
-        Assert.Equal(query.Page, resTodoList.TodoItemList.CurrentPage);
+        Assert.NotNull(resTodoList.TodoItemList);
+        Assert.Equal(query.Page, resTodoList.TodoItemList!.CurrentPage);
         Assert.Equal(query.PageSize, resTodoList.TodoItemList.CurrentPageSize);
         Assert.Equal(query.PageSize, resTodoList.TodoItemList.List.Count());
         Assert.Equal(todoItems.Count, resTodoList.TodoItemList.Total);
