@@ -9,13 +9,13 @@ public class DatabaseTestTool
     private static int DbNameCounter = 0;
 
     public static Faker<TodoItem> TodoItemFaker = new Faker<TodoItem>()
-        .RuleFor(x => x.Title, f => f.Lorem.Sentence(2))
+        .RuleFor(x => x.Title, f => f.Lorem.Word())
         .RuleFor(x => x.Note, f => f.Lorem.Paragraphs())
         .RuleFor(x => x.Priority, f => f.Random.Int(0, 5));
 
     public static Faker<TodoList> TodoListFaker = new Faker<TodoList>()
-        .RuleFor(x => x.Title, f => f.Lorem.Sentence(3))
-        .RuleFor(x => x.Color, f => "#112233");
+        .RuleFor(x => x.Title, f => f.Lorem.Word())
+        .RuleFor(x => x.Color, f => "#556644");
 
     public static async Task<AppDbContext> GetTestDbContext()
     {
