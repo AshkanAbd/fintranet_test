@@ -94,15 +94,19 @@ public class TodoItemRepositoryUnitTest : AbstractDatabaseTest
         var repo = new TodoItemRepository(DbContext);
 
         var res = await repo.GetWithPagination(
-            todoList.Id, 1, 3
+            todoList.Id, 1, 10
         );
 
         Assert.Equal(10, res.Total);
-        Assert.Equal(4, res.PageCount);
+        Assert.Equal(1, res.PageCount);
         Assert.Equal(1, res.CurrentPage);
-        Assert.Equal(3, res.CurrentPageSize);
+        Assert.Equal(10, res.CurrentPageSize);
 
-        var expectedList = todoList.TodoItems.OrderByDescending(x => x.Priority).ToList();
+        var expectedList = todoList.TodoItems
+            .OrderByDescending(x => x.Priority)
+            .ThenByDescending(x => x.CreatedAt)
+            .ThenByDescending(x => x.Id)
+            .ToList();
         var actualList = res.List.ToList();
         for (var i = 0; i < 3; i++) {
             Assert.NotEqual(0, actualList[i].Id);

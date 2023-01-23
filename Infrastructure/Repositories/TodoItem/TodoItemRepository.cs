@@ -38,6 +38,7 @@ public class TodoItemRepository : ITodoItemRepository
             .AsNoTracking()
             .Where(x => x.TodoListId == todoListId)
             .OrderByDescending(x => x.Priority)
+            .ThenByDescending(x => x.CreatedAt)
             .UsePaginationAsync(page, pageSize, cancellationToken);
     }
 
