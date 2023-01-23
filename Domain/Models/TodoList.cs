@@ -12,7 +12,7 @@ public class TodoList : SoftDeletes.ModelTools.ModelExtension
     public long Id { get; set; }
     [MaxLength(30)] [Required] public string Title { get; set; }
 
-    [Column(TypeName = "varchar(6)")]
+    [Column(TypeName = "varchar(7)")]
     [Required]
     public string Color { get; set; }
 

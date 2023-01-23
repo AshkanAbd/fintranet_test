@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructure.Migrations.TodoList
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20230123141645_todolist_table")]
+    [Migration("20230123141938_todolist_table")]
     partial class todolist_table
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -74,7 +74,7 @@ namespace Infrastructure.Migrations.TodoList
 
                     b.Property<string>("Color")
                         .IsRequired()
-                        .HasColumnType("varchar(6)");
+                        .HasColumnType("varchar(7)");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");

@@ -72,7 +72,7 @@ namespace Infrastructure.Migrations.TodoList
 
                     b.Property<string>("Color")
                         .IsRequired()
-                        .HasColumnType("varchar(6)");
+                        .HasColumnType("varchar(7)");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
