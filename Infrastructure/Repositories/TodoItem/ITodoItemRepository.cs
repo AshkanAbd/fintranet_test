@@ -1,4 +1,4 @@
-using Application.Common.Pagination;
+using Infrastructure.Common.Pagination;
 
 namespace Infrastructure.Repositories.TodoItem;
 

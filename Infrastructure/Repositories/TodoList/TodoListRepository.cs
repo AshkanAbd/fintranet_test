@@ -1,4 +1,3 @@
-using Application.Common.Pagination;
 using Infrastructure.Common.Pagination;
 using Microsoft.EntityFrameworkCore;
 
@@ -6,12 +5,12 @@ namespace Infrastructure.Repositories.TodoList;
 
 public class TodoListRepository : ITodoListRepository
 {
-    private AppDbContext DbContext { get; set; }
-
     public TodoListRepository(AppDbContext dbContext)
     {
         DbContext = dbContext;
     }
+
+    private AppDbContext DbContext { get; set; }
 
     public async Task<Domain.Models.TodoList> Add(Domain.Models.TodoList todoList,
         CancellationToken cancellationToken = default)

@@ -1,8 +1,8 @@
 using Application.Common;
-using Application.Common.Pagination;
 using Application.Common.Response;
 using Application.Common.Validation;
 using Application.TodoList.Queries.GetTodoListList;
+using Infrastructure.Common.Pagination;
 using Infrastructure.Repositories.TodoList;
 using MediatR;
 
@@ -11,14 +11,14 @@ namespace Application.TodoList.Commands.CreateTodoList;
 public class CreateTodoListCommandHandler :
     AbstractRequestHandler<CreateTodoListCommand, StdResponse<PaginationModel<GetTodoListListDto>>>
 {
-    private ITodoListRepository TodoListRepository { get; }
-    private IMediator Mediator { get; }
-
     public CreateTodoListCommandHandler(ITodoListRepository todoListRepository, IMediator mediator)
     {
         TodoListRepository = todoListRepository;
         Mediator = mediator;
     }
+
+    private ITodoListRepository TodoListRepository { get; }
+    private IMediator Mediator { get; }
 
     public override async Task<StdResponse<PaginationModel<GetTodoListListDto>>> Handle(CreateTodoListCommand request,
         CancellationToken _)

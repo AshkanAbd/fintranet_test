@@ -9,6 +9,6 @@ public class AppDbContext : SoftDeletes.Core.DbContext
     {
     }
 
-    public DbSet<TodoItem> TodoItems { get; set; }
-    public DbSet<TodoList> TodoLists { get; set; }
+    public DbSet<TodoItem> TodoItems { get; set; } = null!;
+    public DbSet<TodoList> TodoLists { get; set; } = null!;
 }

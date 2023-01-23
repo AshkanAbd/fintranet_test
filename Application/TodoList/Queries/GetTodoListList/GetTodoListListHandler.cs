@@ -1,6 +1,6 @@
 using Application.Common;
-using Application.Common.Pagination;
 using Application.Common.Response;
+using Infrastructure.Common.Pagination;
 using Infrastructure.Repositories.TodoList;
 
 namespace Application.TodoList.Queries.GetTodoListList;
@@ -8,12 +8,12 @@ namespace Application.TodoList.Queries.GetTodoListList;
 public class GetTodoListListHandler : AbstractRequestHandler<GetTodoListListQuery,
     StdResponse<PaginationModel<GetTodoListListDto>>>
 {
-    private ITodoListRepository TodoListRepository { get; }
-
     public GetTodoListListHandler(ITodoListRepository todoListRepository)
     {
         TodoListRepository = todoListRepository;
     }
+
+    private ITodoListRepository TodoListRepository { get; }
 
     public override async Task<StdResponse<PaginationModel<GetTodoListListDto>>> Handle(GetTodoListListQuery request,
         CancellationToken _)

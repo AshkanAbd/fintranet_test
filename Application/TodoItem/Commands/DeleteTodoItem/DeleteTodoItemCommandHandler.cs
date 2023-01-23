@@ -1,7 +1,7 @@
 using Application.Common;
-using Application.Common.Pagination;
 using Application.Common.Response;
 using Application.TodoItem.Queries.GetTodoItemList;
+using Infrastructure.Common.Pagination;
 using Infrastructure.Repositories.TodoItem;
 using MediatR;
 
@@ -10,14 +10,14 @@ namespace Application.TodoItem.Commands.DeleteTodoItem;
 public class DeleteTodoItemCommandHandler :
     AbstractRequestHandler<DeleteTodoItemCommand, StdResponse<PaginationModel<GetTodoItemListDto>>>
 {
-    private ITodoItemRepository TodoItemRepository { get; }
-    private IMediator Mediator { get; }
-
     public DeleteTodoItemCommandHandler(ITodoItemRepository todoItemRepository, IMediator mediator)
     {
         TodoItemRepository = todoItemRepository;
         Mediator = mediator;
     }
+
+    private ITodoItemRepository TodoItemRepository { get; }
+    private IMediator Mediator { get; }
 
     public override async Task<StdResponse<PaginationModel<GetTodoItemListDto>>> Handle(DeleteTodoItemCommand request,
         CancellationToken _)

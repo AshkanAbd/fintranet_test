@@ -1,8 +1,8 @@
 using Application.Common;
-using Application.Common.Pagination;
 using Application.Common.Response;
 using Application.Common.Validation;
 using Application.TodoItem.Queries.GetTodoItemList;
+using Infrastructure.Common.Pagination;
 using Infrastructure.Repositories.TodoItem;
 using MediatR;
 
@@ -11,14 +11,14 @@ namespace Application.TodoItem.Commands.UpdateTodoItem;
 public class UpdateTodoItemCommandHandler :
     AbstractRequestHandler<UpdateTodoItemCommand, StdResponse<PaginationModel<GetTodoItemListDto>>>
 {
-    private ITodoItemRepository TodoItemRepository { get; }
-    private IMediator Mediator { get; }
-
     public UpdateTodoItemCommandHandler(ITodoItemRepository todoItemRepository, IMediator mediator)
     {
         TodoItemRepository = todoItemRepository;
         Mediator = mediator;
     }
+
+    private ITodoItemRepository TodoItemRepository { get; }
+    private IMediator Mediator { get; }
 
     public override async Task<StdResponse<PaginationModel<GetTodoItemListDto>>> Handle(UpdateTodoItemCommand request,
         CancellationToken _)
