@@ -1,3 +1,5 @@
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using Domain.Configurations;
 using Microsoft.EntityFrameworkCore;
 using DbContext = SoftDeletes.Core.DbContext;
@@ -8,7 +10,10 @@ namespace Domain.Models;
 public class TodoList : SoftDeletes.ModelTools.ModelExtension
 {
     public long Id { get; set; }
-    public string Title { get; set; }
+    [MaxLength(30)] [Required] public string Title { get; set; }
+
+    [Column(TypeName = "varchar(6)")]
+    [Required]
     public string Color { get; set; }
 
     public IEnumerable<TodoItem> TodoItems { get; set; }

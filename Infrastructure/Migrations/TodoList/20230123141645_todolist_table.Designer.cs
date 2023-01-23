@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructure.Migrations.TodoList
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20230122012135_todolist_table")]
+    [Migration("20230123141645_todolist_table")]
     partial class todolist_table
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -40,14 +40,16 @@ namespace Infrastructure.Migrations.TodoList
 
                     b.Property<string>("Note")
                         .IsRequired()
+                        .HasMaxLength(65000)
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("Priority")
-                        .HasColumnType("int");
+                    b.Property<byte>("Priority")
+                        .HasColumnType("tinyint");
 
                     b.Property<string>("Title")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(30)
+                        .HasColumnType("nvarchar(30)");
 
                     b.Property<long>("TodoListId")
                         .HasColumnType("bigint");
@@ -72,7 +74,7 @@ namespace Infrastructure.Migrations.TodoList
 
                     b.Property<string>("Color")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("varchar(6)");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
@@ -82,7 +84,8 @@ namespace Infrastructure.Migrations.TodoList
 
                     b.Property<string>("Title")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(30)
+                        .HasColumnType("nvarchar(30)");
 
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("datetime2");
